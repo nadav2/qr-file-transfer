@@ -1,0 +1,6 @@
+pyzbar
+opencv-python
+numpy
+qrcode
+tqdm
+lt-code
