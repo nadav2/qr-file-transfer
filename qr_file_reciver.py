@@ -76,7 +76,7 @@ def read_file():
                     with open(file_name, 'wb') as f:
                         f.write(file_data_bytes)
 
-                cv2.imshow(window_name, frame)
+            cv2.imshow(window_name, frame)
 
             if (cv2.waitKey(delay) & 0xFF == ord('q')) or decoder.is_done():
                 break
