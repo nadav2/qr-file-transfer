@@ -1,6 +1,7 @@
 import base64
 import hashlib
 import math
+import sys
 import warnings
 
 import cv2
@@ -36,7 +37,10 @@ def read_file():
     delay = 1
     window_name = 'QR File Receiver'
 
-    cap = cv2.VideoCapture(camera_id, cv2.CAP_DSHOW)
+    if sys.platform == "win32":
+        cap = cv2.VideoCapture(camera_id, cv2.CAP_DSHOW)
+    else:
+        cap = cv2.VideoCapture(camera_id)
     cv2.namedWindow(window_name, cv2.WINDOW_NORMAL)
     decoder = lt.decode.LtDecoder()
     decoder.done = False
