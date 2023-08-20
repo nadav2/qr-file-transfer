@@ -2,28 +2,22 @@ import base64
 import hashlib
 import math
 import sys
-import warnings
-
 import cv2
 import lt
-import pyzbar.pyzbar as pyzbar
 from tqdm import tqdm
 
-warnings.filterwarnings("ignore", r"\.\\zbar*")
+
+def draw_qr_bbox(frame: cv2.UMat, bbox) -> cv2.UMat:
+    bbox = bbox.astype(int)
+    frame = cv2.rectangle(frame, bbox[0][0], bbox[0][2], (255, 0, 0), 2)
+    return frame
 
 
-def draw_qr(frame: cv2.UMat, qr: pyzbar.Decoded) -> cv2.UMat:
-    frame = cv2.rectangle(
-        img=frame,
-        pt1=(qr.rect.left, qr.rect.top),
-        pt2=(qr.rect.left + qr.rect.width, qr.rect.top + qr.rect.height),
-        color=(0, 255, 0),
-        thickness=3
-    )
+def draw_qr_text(frame: cv2.UMat, text: str) -> cv2.UMat:
     frame = cv2.putText(
         img=frame,
-        text=hashlib.md5(qr.data).hexdigest()[-10:],
-        org=(qr.rect.left, qr.rect.top + qr.rect.height),
+        text=hashlib.md5(text.encode()).hexdigest()[-10:],
+        org=(50, 50),
         fontFace=cv2.FONT_HERSHEY_SIMPLEX,
         fontScale=1,
         color=(0, 0, 255),
@@ -46,6 +40,7 @@ def read_file():
     decoder.done = False
     bar = tqdm(unit="blocks", desc="Receiving file")
     bar_val = 0
+    qr_detector = cv2.QRCodeDetector()
 
     while True:
         try:
@@ -55,11 +50,13 @@ def read_file():
                 print("Can't receive frame (stream end?). Exiting ...")
                 break
 
-            for qr in pyzbar.decode(frame):
-                frame = draw_qr(frame, qr)
+            qr_data, bbox, _ = qr_detector.detectAndDecode(frame)
+            if bbox is not None:
+                frame = draw_qr_bbox(frame, bbox)
 
-                text: str = qr.data.decode("utf-8")
-                bytes_data = base64.b64decode(text)
+            if qr_data:
+                frame = draw_qr_text(frame, qr_data)
+                bytes_data = base64.b64decode(qr_data)
                 block = lt.decode.block_from_bytes(bytes_data)
                 decoder.consume_block(block)
 
