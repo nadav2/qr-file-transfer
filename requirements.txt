@@ -4,3 +4,4 @@ numpy
 qrcode
 tqdm
 lt-code
+pillow

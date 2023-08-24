@@ -8,13 +8,14 @@ import lt
 import numpy as np
 import qrcode
 from qrcode.image.pil import PilImage
+from qrcode.image.styledpil import StyledPilImage
 
 
 def create_qr(data: str) -> PilImage:
     qr = qrcode.QRCode()
     qr.add_data(data)
     qr.make()
-    return qr.make_image()
+    return qr.make_image(image_factory=StyledPilImage)
 
 
 def send_file(path: str):

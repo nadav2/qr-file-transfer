@@ -26,6 +26,7 @@ def draw_qr_text(frame: cv2.UMat, text: str) -> cv2.UMat:
     )
     return frame
 
+
 def read_file():
     camera_id = 0
     delay = 1
