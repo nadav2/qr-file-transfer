@@ -1,7 +1,6 @@
 pyzbar
 opencv-python
 numpy
-qrcode
+qrcode[pil]
 tqdm
 lt-code
-pillow
