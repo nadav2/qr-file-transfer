@@ -9,6 +9,8 @@ const qrCodeDiv = document.getElementById("qr-code");
 const delayText = document.getElementById("delay-text");
 const delayInput = document.getElementById("delay-input");
 
+let ws;
+
 delayInput.value = delay;
 
 delayInput.oninput = () => {
@@ -22,8 +24,8 @@ function sendFileWrapper() {
         stopButton.disabled = false;
         sendButton.disabled = true;
 
+        qrCodeDiv.style.display = "none";
         qrCodeImg.src = "public/upload.gif";
-        qrCodeDiv.style.display = "block";
         sendFile()
     } catch (e) {
         stopSending();
@@ -59,8 +61,8 @@ function addNameToBuffer(fileName, arrayBuffer) {
     return arrayBufferWithFileName;
 }
 
-function sendFile() {
-    const ws = new WebSocket("ws://localhost:8000/ws");
+function sendFileAction() {
+    ws = new WebSocket("ws://localhost:8000/ws");
     const taskQueue = [];
 
     const qr = new QRCode(qrCodeDiv, {
@@ -88,9 +90,16 @@ function sendFile() {
 
     ws.onmessage =  async (event) =>  {
         const message = event.data;
+        if (qrCodeDiv.style.display === "none") {
+            qrCodeDiv.style.display = "block";
+            qrCodeImg.style.display = "none";
+        }
+
         if (message === "NEXT?") {
             if (stop) {
-                ws.close();
+                if (ws.readyState === WebSocket.OPEN) {
+                    ws.send("STOP");
+                }
                 return;
             }
             await taskEmpty();
@@ -115,11 +124,23 @@ function sendFile() {
     }
 }
 
+function sendFile() {
+    try {
+        sendFileAction();
+    } catch (e) {
+        stopSending();
+        alert(e);
+    }
+}
+
 
 function stopSending() {
     stop = true;
+    ws?.close()
+
     qrCodeDiv.style.display = "none";
     qrCodeImg.style.display = "block";
+    qrCodeImg.src = "public/qr.png";
 
     stopButton.disabled = true;
     sendButton.disabled = false;

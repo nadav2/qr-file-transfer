@@ -2,6 +2,11 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <link rel="icon" href="public/qr.png"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="theme-color" content="#000000"/>
+    <meta name="description" content="Transfer files with your camera">
+
     <title>Title</title>
     <script src="modules/qrcodejs/qrcode.min.js"></script>
     <script src="index.js" defer></script>
@@ -23,9 +28,12 @@
 
         <div class="range-container">
             <span style="font-weight: bold">Transfer Speed:</span>
-            <span id="delay-text" style="width: 40px; display: inline-block;">300</span>
-            <input type="range" min="50" max="5000" value="300" id="delay-input">
-            <span>5000</span>
+            <div>
+                <span id="delay-text" style="width: 40px; display: inline-block;">300</span>
+                <input type="range" min="50" max="5000" value="300" id="delay-input">
+                <span>5000</span>
+            </div>
+
         </div>
 
         <button onclick="stopSending()" class="stop-btn" disabled id="stop-btn">Stop</button>

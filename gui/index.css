@@ -52,6 +52,10 @@ button:disabled {
     font-weight: bold;
 }
 
+.qr-container img {
+    width: min(512px, 95%);
+}
+
 .file-container {
     display: flex;
     justify-content: space-between;
@@ -70,12 +74,34 @@ button:disabled {
 
 .range-container {
     display: flex;
+    margin-top: 32px;
+}
+
+.range-container > div {
+    display: flex;
     align-items: center;
     gap: 9px;
-    margin-top: 32px;
+    flex-grow: 1;
+    margin-left: 16px;
 }
 
 .range-container input[type="range"] {
     flex-grow: 1;
 }
 
+@media screen and (max-width: 750px) {
+    .file-container {
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .range-container {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .range-container > div {
+        margin-left: 0;
+    }
+
+}
