@@ -1,6 +1,8 @@
 let stop = false;
 let delay = 300;
 
+const HOST = "www.qr-transfer.eshqol.com"
+
 const stopButton = document.getElementById("stop-btn");
 const sendButton = document.getElementById("send-btn");
 const fileInput = document.getElementById("file-input");
@@ -62,7 +64,7 @@ function addNameToBuffer(fileName, arrayBuffer) {
 }
 
 function sendFileAction() {
-    ws = new WebSocket("ws://localhost:8000/ws");
+    ws = new WebSocket(`ws://${HOST}/ws`);
     const taskQueue = [];
 
     const qr = new QRCode(qrCodeDiv, {
