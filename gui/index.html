@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="modules/qrcodejs/qrcode.min.js"></script>
+    <script src="index.js" defer></script>
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+
+    <div class="main-container">
+        <form class="file-container" onsubmit="return sendFileWrapper()">
+            <input type="file" id="file-input" required>
+            <button id="send-btn" class="send-btn">Send File</button>
+        </form>
+
+        <div class="qr-container">
+            <div id="qr-code"></div>
+            <img src="public/qr.png" alt="qr" id="qr-code-img">
+            <span>Choose File to start streaming...</span>
+        </div>
+
+        <div class="range-container">
+            <span style="font-weight: bold">Transfer Speed:</span>
+            <span id="delay-text" style="width: 40px; display: inline-block;">300</span>
+            <input type="range" min="50" max="5000" value="300" id="delay-input">
+            <span>5000</span>
+        </div>
+
+        <button onclick="stopSending()" class="stop-btn" disabled id="stop-btn">Stop</button>
+    </div>
+
+</body>
+
+
+</html>

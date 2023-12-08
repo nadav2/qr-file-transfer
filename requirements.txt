@@ -4,3 +4,6 @@ numpy
 qrcode[pil]
 tqdm
 lt-code
+fastapi
+uvicorn[standard]
+websockets
