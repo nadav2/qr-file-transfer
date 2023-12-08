@@ -64,7 +64,8 @@ function addNameToBuffer(fileName, arrayBuffer) {
 }
 
 function sendFileAction() {
-    ws = new WebSocket(`ws://${HOST}/ws`);
+    const wsType = "wss" ? HOST.startsWith("https") : "ws";
+    ws = new WebSocket(`${wsType}://${HOST}/ws`);
     const taskQueue = [];
 
     const qr = new QRCode(qrCodeDiv, {
