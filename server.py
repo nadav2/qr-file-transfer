@@ -26,11 +26,12 @@ async def websocket_endpoint(websocket: WebSocket):
     data = await websocket.receive_bytes()
 
     delimiter = b"@@"
-    name_i = data.find(delimiter)
-    name = data[:name_i]
-    file_data = data[name_i + len(delimiter):]
-    name = name.decode("utf-8")
-    blocker = read_blocks(name, file_data)
+    split_data = data.split(delimiter)
+    name = split_data[0].decode("utf-8")
+    resolution = int(split_data[1].decode("utf-8"))
+    file_data = delimiter.join(split_data[2:])
+
+    blocker = read_blocks(name, file_data, block_size=resolution)
 
     for i, block in enumerate(blocker):
         await websocket.send_text(block)

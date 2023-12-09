@@ -1,7 +1,8 @@
 let stop = false;
 let delay = 300;
+let resolution = 102;
 
-const HOST = "www.qr-transfer.eshqol.com"
+const HOST = "localhost:8000"
 
 const stopButton = document.getElementById("stop-btn");
 const sendButton = document.getElementById("send-btn");
@@ -10,14 +11,22 @@ const qrCodeImg = document.getElementById("qr-code-img");
 const qrCodeDiv = document.getElementById("qr-code");
 const delayText = document.getElementById("delay-text");
 const delayInput = document.getElementById("delay-input");
+const resolutionInput = document.getElementById("resolution-input");
+const resolutionText = document.getElementById("resolution-text");
 
 let ws;
 
 delayInput.value = delay;
+resolutionInput.value = resolution;
 
 delayInput.oninput = () => {
     delayText.innerText = delayInput.value.toString();
     delay = delayInput.value;
+}
+
+resolutionInput.oninput = () => {
+    resolutionText.innerText = resolutionInput.value.toString();
+    resolution = resolutionInput.value;
 }
 
 
@@ -50,9 +59,9 @@ async function interval(func) {
     }
 }
 
-function addNameToBuffer(fileName, arrayBuffer) {
+function addPartToBuffer(text, arrayBuffer) {
     // add file name to the beginning of the array buffer and add @@ as a delimiter
-    const fileNameArrayBuffer = new TextEncoder().encode(fileName);
+    const fileNameArrayBuffer = new TextEncoder().encode(text);
     const fileNameWithPad = new Uint8Array(fileNameArrayBuffer.length + 2);
     fileNameWithPad.set(fileNameArrayBuffer);
     fileNameWithPad.set([64, 64], fileNameArrayBuffer.length);
@@ -120,9 +129,10 @@ function sendFileAction() {
         fileReader.readAsArrayBuffer(file);
         const fileName = file.name;
         fileReader.onload =  ()=>  {
-            const arrayBuffer = fileReader.result;
-            const arrayBufferWithFileName = addNameToBuffer(fileName, arrayBuffer);
-            ws.send(arrayBufferWithFileName);
+            let arrayBuffer = fileReader.result;
+            arrayBuffer = addPartToBuffer(resolution.toString(), arrayBuffer);
+            arrayBuffer = addPartToBuffer(fileName, arrayBuffer);
+            ws.send(arrayBuffer);
         }
     }
 }

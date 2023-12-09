@@ -2,12 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <link rel="icon" href="public/qr.png"/>
+    <link rel="icon" href="public/icon.png"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="theme-color" content="#000000"/>
     <meta name="description" content="Transfer files with your camera">
 
-    <title>Title</title>
+    <title>QR File Transfer</title>
     <script src="modules/qrcodejs/qrcode.min.js"></script>
     <script src="index.js" defer></script>
     <link rel="stylesheet" href="index.css">
@@ -33,7 +33,15 @@
                 <input type="range" min="50" max="5000" value="300" id="delay-input">
                 <span>5000</span>
             </div>
+        </div>
 
+        <div class="range-container">
+            <span style="font-weight: bold">QR Resolution:</span>
+            <div>
+                <span id="resolution-text" style="width: 40px; display: inline-block;">102</span>
+                <input type="range" min="20" max="200" value="102" id="resolution-input">
+                <span>200</span>
+            </div>
         </div>
 
         <button onclick="stopSending()" class="stop-btn" disabled id="stop-btn">Stop</button>

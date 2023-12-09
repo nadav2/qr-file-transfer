@@ -47,6 +47,12 @@ button:disabled {
     align-items: center;
 }
 
+
+.qr-container canvas {
+    width: 100%;
+}
+
+
 .qr-container span {
     margin-top: 16px;
     font-weight: bold;
