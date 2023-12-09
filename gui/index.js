@@ -2,7 +2,7 @@ let stop = false;
 let delay = 300;
 let resolution = 102;
 
-const HOST = "www.qr-transfer.eshqol.com"
+const HOST = window.location.host;
 
 const stopButton = document.getElementById("stop-btn");
 const sendButton = document.getElementById("send-btn");
@@ -73,6 +73,8 @@ function addPartToBuffer(text, arrayBuffer) {
 }
 
 function sendFileAction() {
+    stop = false;
+
     const wsType = HOST.startsWith("localhost") ? "ws" : "wss";
     ws = new WebSocket(`${wsType}://${HOST}/ws`);
     const taskQueue = [];
@@ -152,6 +154,7 @@ function stopSending() {
     ws?.close()
 
     qrCodeDiv.style.display = "none";
+    qrCodeDiv.innerText = "";
     qrCodeImg.style.display = "block";
     qrCodeImg.src = "public/qr.png";
 
