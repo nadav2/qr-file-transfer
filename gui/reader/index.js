@@ -5,8 +5,25 @@ const videoElem = document.getElementById('qr-video');
 const progressElem = document.getElementById('progress');
 const qrDataText = document.getElementById('status');
 const cancelBtn = document.getElementById('cancel');
+const speedInfo = document.getElementById('speed-info');
+
+let readsLog = new Map()
 
 function sendQrData(text) {
+    readsLog.set(text, new Date())
+    const getLogsInLastSecond = () => {
+        const now = new Date()
+        const lastSecond = new Date(now.getTime() - 1000)
+        return Array.from(readsLog.entries()).filter(([_, date]) => date > lastSecond)
+    }
+    const lastSecondLog = getLogsInLastSecond()
+    readsLog = new Map(lastSecondLog)
+
+    const speed = lastSecondLog.length * text.length * 0.7
+    const speedRound = Math.round(speed * 100) / 100
+    speedInfo.innerText =  `${speedRound} bytes/sec\n${lastSecondLog.length} reads/sec`
+
+
     if (ws.readyState === WebSocket.OPEN) {
         ws.send(text);
         qrDataText.innerText = new Date().toISOString()
@@ -81,6 +98,7 @@ function restartRecording() {
     progressElem.innerText = "0%";
     progressElem.value = 0;
     cancelBtn.disabled = true;
+    speedInfo.innerText = ""
     startWebSocket();
 }
 

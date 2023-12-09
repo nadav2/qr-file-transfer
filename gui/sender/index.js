@@ -13,6 +13,7 @@ const delayText = document.getElementById("delay-text");
 const delayInput = document.getElementById("delay-input");
 const resolutionInput = document.getElementById("resolution-input");
 const resolutionText = document.getElementById("resolution-text");
+const statusText = document.getElementById("status-text");
 
 let ws;
 
@@ -49,12 +50,13 @@ function sendFileWrapper() {
 
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
-async function interval(func) {
+async function interval(func, setStatus) {
     while (true) {
         await sleep(delay);
         if (stop) {
             break;
         }
+        setStatus(delay);
         func();
     }
 }
@@ -74,6 +76,7 @@ function addPartToBuffer(text, arrayBuffer) {
 
 function sendFileAction() {
     stop = false;
+    let file = {name: "no-name.txt", size: 0};
 
     const wsType = window.location.origin.startsWith("https") ? "wss" : "ws";
     ws = new WebSocket(`${wsType}://${HOST}/ws/send_file`);
@@ -100,7 +103,12 @@ function sendFileAction() {
         }
     }
 
-    interval(task, delay).catch(console.error);
+    const tempResolution = resolution
+     const setStatus = (delay) => statusText.innerText = `
+${file.name} - ${file.size / 1024} KB
+Ideal Transfer speed: ${(1000 / delay) * tempResolution} B/s`.trim();
+
+    interval(task, setStatus).catch(console.error);
 
     ws.onmessage =  async (event) =>  {
         const message = event.data;
@@ -126,7 +134,7 @@ function sendFileAction() {
     ws.onopen =  () => {
         console.log("Connection established");
 
-        const file = fileInput.files[0];
+        file = fileInput.files[0];
         const fileReader = new FileReader();
         fileReader.readAsArrayBuffer(file);
         const fileName = file.name;
@@ -160,4 +168,6 @@ function stopSending() {
 
     stopButton.disabled = true;
     sendButton.disabled = false;
+
+    statusText.innerText = "Choose File to start streaming...";
 }

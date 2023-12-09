@@ -36,6 +36,8 @@
 .qr-container span {
     margin-top: 16px;
     font-weight: bold;
+    white-space: pre-wrap;
+    text-align: center;
 }
 
 .qr-container img {

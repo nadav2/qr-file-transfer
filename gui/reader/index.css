@@ -17,6 +17,13 @@
     gap: 8px;
 }
 
+#speed-info {
+    text-align: center;
+    font-weight: bold;
+    margin-inline: auto;
+    white-space: pre-wrap;
+}
+
 .progress-container {
     display: flex;
     gap: 8px;
