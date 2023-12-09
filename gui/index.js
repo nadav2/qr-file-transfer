@@ -2,7 +2,7 @@ let stop = false;
 let delay = 300;
 let resolution = 102;
 
-const HOST = "localhost:8000"
+const HOST = "www.qr-transfer.eshqol.com"
 
 const stopButton = document.getElementById("stop-btn");
 const sendButton = document.getElementById("send-btn");
