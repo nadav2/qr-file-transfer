@@ -6,7 +6,7 @@ import lt
 from fastapi import FastAPI, WebSocket
 import uvicorn
 from fastapi.middleware.cors import CORSMiddleware
-from starlette.responses import HTMLResponse, RedirectResponse
+from starlette.responses import RedirectResponse
 from starlette.staticfiles import StaticFiles
 
 from qr_file_sender import read_blocks
