@@ -64,7 +64,7 @@ function addNameToBuffer(fileName, arrayBuffer) {
 }
 
 function sendFileAction() {
-    const wsType = "ws" ? HOST.startsWith("localhost") : "wss";
+    const wsType = HOST.startsWith("localhost") ? "ws" : "wss";
     ws = new WebSocket(`${wsType}://${HOST}/ws`);
     const taskQueue = [];
 
