@@ -2,17 +2,30 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <link rel="icon" href="public/icon.png"/>
+    <link rel="icon" href="../public/icon.png"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="theme-color" content="#000000"/>
     <meta name="description" content="Transfer files with your camera">
 
     <title>QR File Transfer</title>
-    <script src="modules/qrcodejs/qrcode.min.js"></script>
+    <script src="../modules/qrcodejs/qrcode.min.js"></script>
     <script src="index.js" defer></script>
+
     <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="../index.css">
 </head>
 <body>
+    <nav class="nav-bar">
+        <button>
+            <a href="../sender" class="nav-btn active">Sender</a>
+            <img src="../public/sender.png" alt="Sender Page">
+        </button>
+
+        <button>
+            <a href="../reader" class="nav-btn">Reader</a>
+            <img src="../public/receiver.png" alt="Receiver Page">
+        </button>
+    </nav>
 
     <div class="main-container">
         <form class="file-container" onsubmit="return sendFileWrapper()">
@@ -22,7 +35,7 @@
 
         <div class="qr-container">
             <div id="qr-code"></div>
-            <img src="public/qr.png" alt="qr" id="qr-code-img">
+            <img src="../public/qr.png" alt="qr" id="qr-code-img">
             <span>Choose File to start streaming...</span>
         </div>
 

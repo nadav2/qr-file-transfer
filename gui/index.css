@@ -19,95 +19,45 @@ button:disabled {
     opacity: 0.5;
 }
 
-.send-btn {
-    background: dodgerblue;
-    padding: 8px;
-    border-radius: 10px;
-    color: white;
-    font-weight: bold;
-    border: none;
-}
-
-
-.main-container {
+.nav-bar {
+    box-sizing: border-box;
     display: flex;
-    flex-direction: column;
-    margin-inline: auto;
-    margin-top: 32px;
-    width: min(1000px, 95vw);
     background: white;
-    padding: 16px;
-    border-radius: 30px;
-}
-
-.qr-container {
-    margin-top: 16px;
-    display: flex;
-    flex-direction: column;
+    height: 50px;
     align-items: center;
+    gap: 32px;
+    padding-left: 16px;
 }
 
 
-.qr-container canvas {
-    width: 100%;
-}
-
-
-.qr-container span {
-    margin-top: 16px;
-    font-weight: bold;
-}
-
-.qr-container img {
-    width: min(512px, 95%);
-}
-
-.file-container {
+.nav-bar > button {
     display: flex;
-    justify-content: space-between;
+    align-items: center;
+    gap: 6px;
+    background: none;
+    border: 0;
 }
 
-.stop-btn {
-    background: red;
-    border: 0;
-    border-radius: 10px;
-    padding-block: 8px;
-    color: white;
+
+.nav-bar img {
+    width: 42px;
+    height: 42px;
+}
+
+
+.nav-bar a {
+    text-decoration: none;
+    color: black;
     font-weight: bold;
     font-size: 18px;
-    margin-top: 48px;
+    border-bottom: 2px solid lightgray;
+    transition: border-bottom 0.2s ease-in-out;
 }
 
-.range-container {
-    display: flex;
-    margin-top: 32px;
+.nav-bar button:hover a {
+    border-bottom: 2px solid black;
 }
 
-.range-container > div {
-    display: flex;
-    align-items: center;
-    gap: 9px;
-    flex-grow: 1;
-    margin-left: 16px;
-}
-
-.range-container input[type="range"] {
-    flex-grow: 1;
-}
-
-@media screen and (max-width: 750px) {
-    .file-container {
-        flex-direction: column;
-        gap: 16px;
-    }
-
-    .range-container {
-        flex-direction: column;
-        gap: 12px;
-    }
-
-    .range-container > div {
-        margin-left: 0;
-    }
-
+.nav-bar a.active {
+    border-bottom: 2px solid black;
 }

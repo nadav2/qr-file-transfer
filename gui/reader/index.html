@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" href="../public/icon.png"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="theme-color" content="#000000"/>
+    <meta name="description" content="Transfer files with your camera">
+
+    <title>QR File Transfer</title>
+    <script src="../modules/qrcodejs/qrcode.min.js"></script>
+    <script src="../modules/qr-scanner.umd.min.js"></script>
+    <script src="index.js" defer></script>
+
+    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="../index.css">
+</head>
+<body>
+        <nav class="nav-bar">
+        <button>
+            <a href="../sender" class="nav-btn">Sender</a>
+            <img src="../public/sender.png" alt="Sender Page">
+        </button>
+
+        <button>
+            <a href="../reader" class="nav-btn active">Reader</a>
+            <img src="../public/receiver.png" alt="Receiver Page">
+        </button>
+    </nav>
+
+    <div class="main-container">
+        <span class="title">Scan QR codes to transfer files</span>
+
+        <video id="qr-video"></video>
+
+        <span class="qr-status">
+            <span style="font-weight: bold">Last QR code:</span>
+            <span id="status">Waiting for QR codes...</span>
+        </span>
+        <div class="progress-container">
+            <span style="font-weight: bold">Progress:</span>
+            <progress id="progress" value="0" max="100">0%</progress>
+        </div>
+        <button class="cancel-btn" id="cancel" onclick="restartRecording()" disabled>Restart</button>
+    </div>
+
+</body>
+
+
+</html>

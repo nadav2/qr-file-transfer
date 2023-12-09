@@ -1,0 +1,46 @@
+
+
+.main-container {
+    display: flex;
+    flex-direction: column;
+    margin-inline: auto;
+    margin-top: 32px;
+    width: min(1000px, 95vw);
+    background: white;
+    padding: 16px;
+    border-radius: 30px;
+}
+
+.qr-status {
+    margin-top: 16px;
+    display: flex;
+    gap: 8px;
+}
+
+.progress-container {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.progress-container > progress {
+    width: 100%;
+}
+
+.cancel-btn {
+    background: orange;
+    padding-block: 8px;
+    border-radius: 8px;
+    margin-top: 24px;
+    border: 0;
+    color: white;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 16px;
+    text-align: center;
+}

@@ -36,7 +36,7 @@ function sendFileWrapper() {
         sendButton.disabled = true;
 
         qrCodeDiv.style.display = "none";
-        qrCodeImg.src = "public/upload.gif";
+        qrCodeImg.src = "../public/upload.gif";
         sendFile()
     } catch (e) {
         stopSending();
@@ -75,8 +75,8 @@ function addPartToBuffer(text, arrayBuffer) {
 function sendFileAction() {
     stop = false;
 
-    const wsType = HOST.startsWith("localhost") ? "ws" : "wss";
-    ws = new WebSocket(`${wsType}://${HOST}/ws`);
+    const wsType = window.location.origin.startsWith("https") ? "wss" : "ws";
+    ws = new WebSocket(`${wsType}://${HOST}/ws/send_file`);
     const taskQueue = [];
 
     const qr = new QRCode(qrCodeDiv, {
@@ -156,7 +156,7 @@ function stopSending() {
     qrCodeDiv.style.display = "none";
     qrCodeDiv.innerText = "";
     qrCodeImg.style.display = "block";
-    qrCodeImg.src = "public/qr.png";
+    qrCodeImg.src = "../public/qr.png";
 
     stopButton.disabled = true;
     sendButton.disabled = false;
