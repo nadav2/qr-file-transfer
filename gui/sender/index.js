@@ -98,7 +98,7 @@ function sendFileAction() {
     }
 
     const taskEmpty = async () => {
-        while (taskQueue.length > 0) {
+        while (taskQueue.length > 25) {
             await sleep(100);
         }
     }
