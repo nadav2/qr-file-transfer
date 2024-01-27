@@ -88,4 +88,4 @@ app.mount("/", StaticFiles(directory="./gui", html=True), name="gui")
 
 if __name__ == '__main__':
     port = os.environ.get("PORT", 8000)
-    uvicorn.run(app, host="localhost", port=port)
+    uvicorn.run(app, host="localhost", port=int(port))
