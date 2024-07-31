@@ -17,7 +17,7 @@ def create_qr(data: str) -> PilImage:
     return qr.make_image()
 
 
-def read_blocks(file_name: str, file_data: bytes, block_size=102):
+def read_blocks(file_name: str, file_data: bytes, block_size: int):
     file_name_wrapper = file_name.encode("utf-8") + b"@@"
     f = io.BytesIO(file_name_wrapper + file_data)
 
@@ -27,7 +27,7 @@ def read_blocks(file_name: str, file_data: bytes, block_size=102):
         yield encoded
 
 
-def send_file(path: str):
+def send_file(path: str, block_size: int = 150):
     cv_window_name = "QR File Sender"
     cv2.namedWindow(cv_window_name, cv2.WINDOW_NORMAL)
 
@@ -35,7 +35,7 @@ def send_file(path: str):
         file_data = f.read()
 
     file_name = os.path.basename(path)
-    encoder = read_blocks(file_name, file_data)
+    encoder = read_blocks(file_name, file_data, block_size=block_size)
     for i, encoded in enumerate(encoder):
         qr = create_qr(encoded)
 

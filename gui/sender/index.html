@@ -9,6 +9,7 @@
 
     <title>QR File Transfer</title>
     <script src="../modules/qrcodejs/qrcode.min.js"></script>
+    <script src="../modules/jszip.min.js"></script>
     <script src="index.js" defer></script>
 
     <link rel="stylesheet" href="index.css">
@@ -29,7 +30,7 @@
 
     <div class="main-container">
         <form class="file-container" onsubmit="return sendFileWrapper()">
-            <input type="file" id="file-input" required>
+            <input type="file" id="file-input" required multiple>
             <button id="send-btn" class="send-btn">Send File</button>
         </form>
 
@@ -52,8 +53,8 @@
             <span style="font-weight: bold">QR Resolution:</span>
             <div>
                 <span id="resolution-text" style="width: 40px; display: inline-block;">102</span>
-                <input type="range" min="20" max="300" value="102" id="resolution-input">
-                <span>300</span>
+                <input type="range" min="20" max="800" value="102" id="resolution-input">
+                <span>800</span>
             </div>
         </div>
 

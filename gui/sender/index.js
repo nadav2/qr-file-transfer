@@ -104,13 +104,13 @@ function sendFileAction() {
     }
 
     const tempResolution = resolution
-     const setStatus = (delay) => statusText.innerText = `
+    const setStatus = (delay) => statusText.innerText = `
 ${file.name} - ${file.size / 1024} KB
 Ideal Transfer speed: ${(1000 / delay) * tempResolution} B/s`.trim();
 
     interval(task, setStatus).catch(console.error);
 
-    ws.onmessage =  async (event) =>  {
+    ws.onmessage = async (event) => {
         const message = event.data;
         if (qrCodeDiv.style.display === "none") {
             qrCodeDiv.style.display = "block";
@@ -131,18 +131,49 @@ Ideal Transfer speed: ${(1000 / delay) * tempResolution} B/s`.trim();
         }
     };
 
-    ws.onopen =  () => {
+    const readFile = (file) => {
+        return new Promise((resolve, reject) => {
+            const fileReader = new FileReader();
+            fileReader.readAsArrayBuffer(file);
+            const fileName = file.name;
+            fileReader.onload = () => {
+                let arrayBuffer = fileReader.result;
+                arrayBuffer = addPartToBuffer(resolution.toString(), arrayBuffer);
+                arrayBuffer = addPartToBuffer(fileName, arrayBuffer);
+                resolve(arrayBuffer)
+            }
+            fileReader.onerror = () => {
+                const error = fileReader.error
+                reject(error)
+            }
+        })
+    }
+
+    ws.onopen = async () => {
         console.log("Connection established");
 
-        file = fileInput.files[0];
-        const fileReader = new FileReader();
-        fileReader.readAsArrayBuffer(file);
-        const fileName = file.name;
-        fileReader.onload =  ()=>  {
-            let arrayBuffer = fileReader.result;
+        if (fileInput.files.length === 1) {
+            file = fileInput.files[0];
+            const arrBuf = await readFile(file)
+            ws.send(arrBuf)
+        } else {
+            const zip = new JSZip()
+            const files = [...fileInput.files]
+            await Promise.all(
+                files.map(async file => {
+                    const arrBuf = await readFile(file)
+                    return zip.file(file.name, arrBuf)
+                })
+            )
+            const blob = await zip.generateAsync({type: "blob"})
+            let arrayBuffer = await blob.arrayBuffer()
+            file = {
+                name: `comb_${Math.floor(Date.now() / 1000)}.zip`,
+                size: arrayBuffer.byteLength
+            }
             arrayBuffer = addPartToBuffer(resolution.toString(), arrayBuffer);
-            arrayBuffer = addPartToBuffer(fileName, arrayBuffer);
-            ws.send(arrayBuffer);
+            arrayBuffer = addPartToBuffer(file.name, arrayBuffer);
+            ws.send(arrayBuffer)
         }
     }
 }
