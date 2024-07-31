@@ -21,7 +21,7 @@ function sendQrData(text) {
 
     const speed = lastSecondLog.length * text.length * 0.7
     const speedRound = Math.round(speed * 100) / 100
-    speedInfo.innerText =  `${speedRound} bytes/sec\n${lastSecondLog.length} reads/sec`
+    speedInfo.innerText = `${speedRound} bytes/sec\n${lastSecondLog.length} reads/sec`
 
 
     if (ws.readyState === WebSocket.OPEN) {
@@ -86,7 +86,16 @@ function startQrReader() {
         {
             highlightScanRegion: true,
             highlightCodeOutline: true,
-            maxScansPerSecond: 30
+            maxScansPerSecond: 30,
+            calculateScanRegion: (v) => {
+                const pSize = 0.85
+                return {
+                    x: v.videoWidth * (1 - pSize) / 2,
+                    y: v.videoHeight * (1 - pSize) / 2,
+                    width: v.videoWidth * pSize,
+                    height: v.videoHeight * pSize
+                }
+            },
         }
     );
     qrScanner.start();
