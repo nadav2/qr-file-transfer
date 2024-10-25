@@ -3,7 +3,6 @@ import math
 import os
 import tempfile
 from typing import List
-from uuid import uuid4
 
 import lt
 from fastapi import FastAPI, WebSocket, File, Form, UploadFile
@@ -113,7 +112,6 @@ def decode_chunks_action(files: List[UploadFile] = File(...), ext: str = Form(..
     for file in files:
         if not file.filename.endswith(f".{ext}"):
             continue
-
         file_name = file.filename.replace("\\", "/").split("/")[-1]
         file_names.append([file.file, file_name])
 
