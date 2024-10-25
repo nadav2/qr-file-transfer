@@ -36,13 +36,16 @@ async function sendAirportReq(url, formData, disabledComps, progressID) {
             const chunk = decoder.decode(value);
             const jsVal = JSON.parse(chunk);
             if (jsVal.idx) {
-                console.log(jsVal.idx, jsVal.n);
                 progressBr.classList.remove("progress-bounce");
                 progressBr.style.width = `${(jsVal.idx / jsVal.n) * 100}%`;
             } else if (jsVal.path) {
                 downloadFileFromServer(jsVal.path)
                 return
+            } else if (jsVal.error) {
+                alert(jsVal.error);
+                return
             } else {
+                console.log(jsVal);
                 alert(`Unexpected response: ${jsVal}`);
                 return
             }

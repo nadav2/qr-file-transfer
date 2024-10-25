@@ -64,9 +64,10 @@ def stream_chunk_to_excel(json_chunk: dict, path: str):
     df.to_excel(path, index=False)
 
 
-def encode_chunks(input_path: str, out: str, chunk_size: int = 50_000_000, ext: str = "json"):
+def encode_chunks(input_path: str, out: str, chunk_size: int = 50_000_000, ext: str = "json", chunk_name: str = "chunk"):
     """Create chunks from input file using streaming"""
     n_iter = math.ceil(os.path.getsize(input_path) / chunk_size)
+    b64_chunk_name = chunk_name if chunk_name == "chunk" else base64.b64encode(chunk_name.encode()).decode('utf-8')
 
     with open(input_path, 'rb') as f:
         for idx, b64_chunk in enumerate(tqdm.tqdm(
@@ -78,7 +79,7 @@ def encode_chunks(input_path: str, out: str, chunk_size: int = 50_000_000, ext: 
             json_chunk = distribute_to_letters(b64_chunk)
             json_chunk['idx'] = idx
 
-            f_name = f"{out}/chunk_{idx}"
+            f_name = f"{out}/{b64_chunk_name}_{idx}"
             if ext == "json":
                 with open(f"{f_name}.json", "w") as chunk_file:
                     chunk_file.write(json.dumps(json_chunk))
@@ -88,14 +89,14 @@ def encode_chunks(input_path: str, out: str, chunk_size: int = 50_000_000, ext: 
             yield {"idx": idx + 1, "n": n_iter}
 
 
-def encode_chunks_from_io(file_data: bytes, chunk_size: int, ext: str) -> Generator:
+def encode_chunks_from_io(file_name: str, file_data: bytes, chunk_size: int, ext: str) -> Generator:
     temp_dir = tempfile.TemporaryDirectory()
     temp_file = temp_dir.name + "/temp_file.txt"
     with open(temp_file, "wb") as f:
         f.write(file_data)
         f.seek(0)
 
-    for val in encode_chunks(input_path=temp_file, out=temp_dir.name, ext=ext, chunk_size=chunk_size):
+    for val in encode_chunks(input_path=temp_file, out=temp_dir.name, ext=ext, chunk_name=file_name, chunk_size=chunk_size):
         yield json.dumps(val)
 
     zip_file = zip_directory(temp_dir.name, f"output/{uuid4().hex}.zip")
