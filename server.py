@@ -3,6 +3,7 @@ import math
 import os
 import tempfile
 from typing import List
+from uuid import uuid4
 
 import lt
 from fastapi import FastAPI, WebSocket, File, Form, UploadFile
@@ -98,12 +99,24 @@ def encode_chunks_action(file: UploadFile = File(...), chunk_size_mb: str = Form
     )
 
 
-
 @app.post("/decode_chunks")
 def decode_chunks_action(files: List[UploadFile] = File(...), ext: str = Form(...)):
-    decoder.decode_chunks
-    return {}
+    temp_dir = tempfile.TemporaryDirectory()
+    for file in files:
+        if not file.filename.endswith(f".{ext}"):
+            continue
 
+        file_name = file.filename.replace("\\", "/").split("/")[-1]
+        temp_file = temp_dir.name + f"/{file_name}"
+        with open(temp_file, "wb") as f:
+            f.write(file.file.read())
+            f.seek(0)
+
+    out_path = f"output/{uuid4().hex}.txt"
+    return StreamingResponse(
+        decoder.decode_chunks_from_io(temp_dir.name, out_path, ext, temp_dir),
+        media_type="text/plain"
+    )
 
 @app.get("/")
 async def root():

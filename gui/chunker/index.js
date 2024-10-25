@@ -11,12 +11,13 @@ function downloadFileFromServer(url) {
     document.body.removeChild(link);
 }
 
-async function sendAirportReq(url, formData, btnId, progressID) {
-    const button = document.getElementById(btnId);
+async function sendAirportReq(url, formData, disabledComps, progressID) {
     const progress = document.getElementById(progressID);
     const progressBr = progress.querySelector(".progress-br");
     try {
-        button.disabled = true;
+        for (let id of disabledComps) {
+            document.getElementById(id).disabled = true;
+        }
         progress.style.display = "block";
         const response = await fetch(url, {
             method: 'POST',
@@ -49,7 +50,9 @@ async function sendAirportReq(url, formData, btnId, progressID) {
     } catch (error) {
         alert(`Error: ${error}`);
     } finally {
-        button.disabled = false;
+        for (let id of disabledComps) {
+            document.getElementById(id).disabled = false;
+        }
         progress.style.display = "none";
     }
 }
@@ -58,20 +61,23 @@ encodeForm.addEventListener('submit', async (e) => {
     e.preventDefault();
 
     const formData = new FormData();
-    //file: UploadFile = File(...), chunk_size: str = Form(...), ext: str = Form(...)
+    // file: UploadFile = File(...), chunk_size_mb: str = Form(...), ext: str = Form(...)
     const form = e.target;
     formData.append('file', form.file.files[0]);
     formData.append('chunk_size_mb', form.chunk_size.value);
     formData.append('ext', form.chunk_format.value);
-    await sendAirportReq("/encode_chunks", formData, "encode-btn", "encode-progress");
+    await sendAirportReq("/encode_chunks", formData, ["encode-btn", "encode-file"], "encode-progress");
 });
 
+
 decodeForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
+    e.preventDefault();
 
     const formData = new FormData();
     const form = e.target;
-
-    formData.append('name', form.name.value);
-    await sendAirportReq(formData);
+    for (let file of form.files.files) {
+        formData.append('files', file);
+    }
+    formData.append("ext", form.chunk_format.value);
+    await sendAirportReq("/decode_chunks", formData, ["decode-btn", "decode-files"], "decode-progress");
 });

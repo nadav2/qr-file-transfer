@@ -38,7 +38,7 @@
 
     <form class="chunk-container" id="encode-form">
         <span>File to chunks:</span>
-        <input required type="file" name="file">
+        <input required type="file" name="file" id="encode-file">
         <label>
             <span>Chunk size (mb):</span>
             <input required type="number" value="30" name="chunk_size" min="1" max="100">
@@ -61,12 +61,21 @@
 
     <form class="chunk-container" id="decode-form">
         <span>Chunks to file:</span>
-        <input required type="file" multiple webkitdirectory>
-        <button id="download-merged" class="send-btn">Download Merged File</button>
+        <input required type="file" multiple id="decode-files" name="files">
+        <label>
+            <span>Chunk format:</span>
+            <select required name="chunk_format">
+                <option value="xlsx">XLSX</option>
+                <option value="json">JSON</option>
+            </select>
+        </label>
+
+        <div class="progress" id="decode-progress">
+            <div class="progress-br progress-bounce"></div>
+        </div>
+        <button id="decode-btn" class="send-btn">Download Merged File</button>
     </form>
 </div>
 
 </body>
-
-
 </html>
