@@ -16,50 +16,55 @@
     <link rel="stylesheet" href="../index.css">
 </head>
 <body>
-    <nav class="nav-bar">
-        <button>
-            <a href="../sender" class="nav-btn active">Sender</a>
-            <img src="../public/sender.png" alt="Sender Page">
-        </button>
+<nav class="nav-bar">
+    <button>
+        <a href="../sender" class="nav-btn active">Sender</a>
+        <img src="../public/sender.png" alt="Sender Page">
+    </button>
 
-        <button>
-            <a href="../reader" class="nav-btn">Reader</a>
-            <img src="../public/receiver.png" alt="Receiver Page">
-        </button>
-    </nav>
+    <button>
+        <a href="../reader" class="nav-btn">Reader</a>
+        <img src="../public/receiver.png" alt="Receiver Page">
+    </button>
 
-    <div class="main-container">
-        <form class="file-container" onsubmit="return sendFileWrapper()">
-            <input type="file" id="file-input" required multiple>
-            <button id="send-btn" class="send-btn">Send File</button>
-        </form>
+    <button>
+        <a href="../chunker" class="nav-btn">Chunker</a>
+        <img src="../public/airport.png" alt="Chunker Page">
+    </button>
+</nav>
 
-        <div class="qr-container">
-            <div id="qr-code"></div>
-            <img src="../public/qr.png" alt="qr" id="qr-code-img">
-            <span id="status-text">Choose File to start streaming...</span>
-        </div>
+<div class="main-container">
+    <form class="file-container" onsubmit="return sendFileWrapper()">
+        <input type="file" id="file-input" required multiple>
+        <button id="send-btn" class="send-btn">Send File</button>
+    </form>
 
-        <div class="range-container">
-            <span style="font-weight: bold">Transfer Speed:</span>
-            <div>
-                <span id="delay-text" style="width: 40px; display: inline-block;">300</span>
-                <input type="range" min="50" max="5000" value="300" id="delay-input">
-                <span>5000</span>
-            </div>
-        </div>
-
-        <div class="range-container">
-            <span style="font-weight: bold">QR Resolution:</span>
-            <div>
-                <span id="resolution-text" style="width: 40px; display: inline-block;">102</span>
-                <input type="range" min="20" max="800" value="102" id="resolution-input">
-                <span>800</span>
-            </div>
-        </div>
-
-        <button onclick="stopSending()" class="stop-btn" disabled id="stop-btn">Stop</button>
+    <div class="qr-container">
+        <div id="qr-code"></div>
+        <img src="../public/qr.png" alt="qr" id="qr-code-img">
+        <span id="status-text">Choose File to start streaming...</span>
     </div>
+
+    <div class="range-container">
+        <span style="font-weight: bold">Transfer Speed:</span>
+        <div>
+            <span id="delay-text" style="width: 40px; display: inline-block;">300</span>
+            <input type="range" min="50" max="5000" value="300" id="delay-input">
+            <span>5000</span>
+        </div>
+    </div>
+
+    <div class="range-container">
+        <span style="font-weight: bold">QR Resolution:</span>
+        <div>
+            <span id="resolution-text" style="width: 40px; display: inline-block;">102</span>
+            <input type="range" min="20" max="800" value="102" id="resolution-input">
+            <span>800</span>
+        </div>
+    </div>
+
+    <button onclick="stopSending()" class="stop-btn" disabled id="stop-btn">Stop</button>
+</div>
 
 </body>
 

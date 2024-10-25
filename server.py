@@ -1,14 +1,18 @@
 import base64
 import math
 import os
+from typing import List
 
 import lt
-from fastapi import FastAPI, WebSocket
+from fastapi import FastAPI, WebSocket, File, Form, UploadFile
 import uvicorn
 from fastapi.middleware.cors import CORSMiddleware
-from starlette.responses import RedirectResponse
-from starlette.staticfiles import StaticFiles
+from fastapi.responses import RedirectResponse
+from fastapi.staticfiles import StaticFiles
+from pydantic import BaseModel
 
+from airport.decode import decode_chunks
+from airport.encode import encode_chunks
 from qr_file_sender import read_blocks
 
 app = FastAPI()
@@ -22,6 +26,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+class FileReq(BaseModel):
+    name: str
 
 
 @app.websocket("/ws/send_file")
@@ -76,6 +83,22 @@ async def websocket_endpoint(websocket: WebSocket):
 
             await websocket.send_text("FILE_NAME:" + file_name.decode("utf-8"))
             await websocket.send_bytes(file_data_bytes)
+
+
+@app.post("/encode_chunks")
+def encode_chunks_action(file: UploadFile = File(...), chunk_size: str = Form(...), ext: str = Form(...)):
+    encode_chunks
+    return {}
+
+
+@app.post("/decode_chunks")
+def decode_chunks_action(files: List[UploadFile] = File(...), ext: str = Form(...)):
+    decode_chunks
+    return {}
+
+@app.post("/download_file")
+def download_file(data: FileReq):
+    return {}
 
 
 @app.get("/")

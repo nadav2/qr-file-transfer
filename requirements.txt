@@ -5,5 +5,8 @@ qrcode[pil]
 tqdm
 lt-code
 fastapi
+pydantic
 uvicorn[standard]
 websockets
+pandas
+python-multipart

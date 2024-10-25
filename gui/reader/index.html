@@ -16,38 +16,43 @@
     <link rel="stylesheet" href="../index.css">
 </head>
 <body>
-        <nav class="nav-bar">
-        <button>
-            <a href="../sender" class="nav-btn">Sender</a>
-            <img src="../public/sender.png" alt="Sender Page">
-        </button>
+<nav class="nav-bar">
+    <button>
+        <a href="../sender" class="nav-btn">Sender</a>
+        <img src="../public/sender.png" alt="Sender Page">
+    </button>
 
-        <button>
-            <a href="../reader" class="nav-btn active">Reader</a>
-            <img src="../public/receiver.png" alt="Receiver Page">
-        </button>
-    </nav>
+    <button>
+        <a href="../reader" class="nav-btn active">Reader</a>
+        <img src="../public/receiver.png" alt="Receiver Page">
+    </button>
 
-    <div class="main-container">
-        <span class="title">Scan QR codes to transfer files</span>
+    <button>
+        <a href="../chunker" class="nav-btn">Chunker</a>
+        <img src="../public/airport.png" alt="Chunker Page">
+    </button>
+</nav>
 
-        <video id="qr-video"></video>
+<div class="main-container">
+    <span class="title">Scan QR codes to transfer files</span>
+
+    <video id="qr-video"></video>
 
 
-        <span class="qr-status">
+    <span class="qr-status">
             <span id="speed-info"></span>
         </span>
 
-        <span class="qr-status">
+    <span class="qr-status">
             <span style="font-weight: bold">Last QR code:</span>
             <span id="status">Waiting for QR codes...</span>
         </span>
-        <div class="progress-container">
-            <span style="font-weight: bold">Progress:</span>
-            <progress id="progress" value="0" max="100">0%</progress>
-        </div>
-        <button class="cancel-btn" id="cancel" onclick="restartRecording()" disabled>Restart</button>
+    <div class="progress-container">
+        <span style="font-weight: bold">Progress:</span>
+        <progress id="progress" value="0" max="100">0%</progress>
     </div>
+    <button class="cancel-btn" id="cancel" onclick="restartRecording()" disabled>Restart</button>
+</div>
 
 </body>
 
