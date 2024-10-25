@@ -8,6 +8,10 @@
     border: none;
 }
 
+button:disabled {
+    opacity: 0.6;
+}
+
 
 .main-container {
     display: flex;
@@ -50,6 +54,41 @@
 .chunk-container > span {
     font-weight: bold;
     font-size: 17px;
+}
+
+.progress {
+    /*display: none;*/
+    background: lightgray;
+    border-radius: 30px;
+    height: 16px;
+    position: relative;
+    display: none;
+}
+
+.progress-br {
+    border-radius: 30px;
+    background: orange;
+    width: 20%;
+    height: 100%;
+    position: relative;
+    left: 0;
+    transition: width 0.15s linear;
+}
+
+.progress-bounce {
+    animation: moveLeftRight 2s linear infinite;
+}
+
+@keyframes moveLeftRight {
+    0% {
+        left: 0;
+    }
+    50% {
+        left: 80%;
+    }
+    100% {
+        left: 0;
+    }
 }
 
 @media (max-width: 800px) {

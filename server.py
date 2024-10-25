@@ -1,18 +1,19 @@
 import base64
 import math
 import os
+import tempfile
 from typing import List
 
 import lt
 from fastapi import FastAPI, WebSocket, File, Form, UploadFile
 import uvicorn
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import RedirectResponse
+from fastapi.responses import RedirectResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
-from airport.decode import decode_chunks
-from airport.encode import encode_chunks
+import airport.decode as decoder
+import airport.encode as encoder
 from qr_file_sender import read_blocks
 
 app = FastAPI()
@@ -86,18 +87,21 @@ async def websocket_endpoint(websocket: WebSocket):
 
 
 @app.post("/encode_chunks")
-def encode_chunks_action(file: UploadFile = File(...), chunk_size: str = Form(...), ext: str = Form(...)):
-    encode_chunks
-    return {}
+def encode_chunks_action(file: UploadFile = File(...), chunk_size_mb: str = Form(...), ext: str = Form(...)):
+    print(f"Encoding chunks with size: {file.size} bytes")
+    chunk_size_bytes = int(float(chunk_size_mb) * 1_000_000)
+    file_bytes = file.file.read()
+
+    return StreamingResponse(
+        encoder.encode_chunks_from_io(file_bytes, chunk_size_bytes, ext),
+        media_type="text/plain"
+    )
+
 
 
 @app.post("/decode_chunks")
 def decode_chunks_action(files: List[UploadFile] = File(...), ext: str = Form(...)):
-    decode_chunks
-    return {}
-
-@app.post("/download_file")
-def download_file(data: FileReq):
+    decoder.decode_chunks
     return {}
 
 
@@ -106,6 +110,8 @@ async def root():
     return RedirectResponse(url="/sender")
 
 
+os.makedirs("output", exist_ok=True)
+app.mount("/output", StaticFiles(directory="./output"), name="output")
 app.mount("/", StaticFiles(directory="./gui", html=True), name="gui")
 
 

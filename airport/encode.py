@@ -4,10 +4,16 @@ import json
 import math
 import os
 import string
+import tempfile
 from typing import BinaryIO, Generator
+from uuid import uuid4
 
 import tqdm
 import pandas as pd
+
+from airport.utils import zip_directory
+
+EXCEL_CHUNK_SIZE = 20_000
 
 
 def stream_to_base64_chunks(file_obj: BinaryIO, chunk_size: int) -> Generator[str, None, None]:
@@ -37,7 +43,6 @@ def distribute_to_letters(b64_chunk: str) -> dict:
 
     return json_chunk
 
-EXCEL_CHUNK_SIZE = 20_000
 
 def stream_chunk_to_excel(json_chunk: dict, path: str):
     """Write chunk to Excel file using chunks to minimize memory usage"""
@@ -61,7 +66,6 @@ def stream_chunk_to_excel(json_chunk: dict, path: str):
 
 def encode_chunks(input_path: str, out: str, chunk_size: int = 50_000_000, ext: str = "json"):
     """Create chunks from input file using streaming"""
-    os.makedirs(out, exist_ok=True)
     n_iter = math.ceil(os.path.getsize(input_path) / chunk_size)
 
     with open(input_path, 'rb') as f:
@@ -81,4 +85,20 @@ def encode_chunks(input_path: str, out: str, chunk_size: int = 50_000_000, ext: 
             elif ext == "xlsx":
                 stream_chunk_to_excel(json_chunk, f"{f_name}.xlsx")
 
+            yield {"idx": idx + 1, "n": n_iter}
 
+
+def encode_chunks_from_io(file_data: bytes, chunk_size: int, ext: str) -> Generator:
+    temp_dir = tempfile.TemporaryDirectory()
+    temp_file = temp_dir.name + "/temp_file.txt"
+    with open(temp_file, "wb") as f:
+        f.write(file_data)
+        f.seek(0)
+
+    for val in encode_chunks(input_path=temp_file, out=temp_dir.name, ext=ext, chunk_size=chunk_size):
+        yield json.dumps(val)
+
+    zip_file = zip_directory(temp_dir.name, f"output/{uuid4().hex}.zip")
+    temp_dir.cleanup()
+
+    yield json.dumps({"path": zip_file})

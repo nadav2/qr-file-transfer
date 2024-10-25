@@ -10,3 +10,4 @@ uvicorn[standard]
 websockets
 pandas
 python-multipart
+openpyxl

@@ -38,19 +38,23 @@
 
     <form class="chunk-container" id="encode-form">
         <span>File to chunks:</span>
-        <input required type="file">
+        <input required type="file" name="file">
         <label>
             <span>Chunk size (mb):</span>
-            <input required type="number" value="30">
+            <input required type="number" value="30" name="chunk_size" min="1" max="100">
         </label>
         <label>
             <span>Chunk format:</span>
-            <select required>
+            <select required name="chunk_format">
                 <option value="xlsx">XLSX</option>
                 <option value="json">JSON</option>
             </select>
         </label>
-        <button id="download-chunks" class="send-btn">Download Chunks</button>
+
+        <div class="progress" id="encode-progress">
+            <div class="progress-br progress-bounce"></div>
+        </div>
+        <button id="encode-btn" class="send-btn">Download Chunks</button>
     </form>
 
     <div style="height: 32px"></div>
