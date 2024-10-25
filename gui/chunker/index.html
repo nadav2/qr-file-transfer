@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" href="../public/icon.png"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="theme-color" content="#000000"/>
+    <meta name="description" content="Transfer files with your camera">
+
+    <title>QR File Transfer</title>
+    <script src="../modules/qrcodejs/qrcode.min.js"></script>
+    <script src="../modules/jszip.min.js"></script>
+    <script src="index.js" defer></script>
+
+    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="../index.css">
+</head>
+<body>
+<nav class="nav-bar">
+    <button>
+        <a href="../sender" class="nav-btn active">Sender</a>
+        <img src="../public/sender.png" alt="Sender Page">
+    </button>
+
+    <button>
+        <a href="../reader" class="nav-btn">Reader</a>
+        <img src="../public/receiver.png" alt="Receiver Page">
+    </button>
+
+    <button>
+        <a href="../chunker" class="nav-btn">Chunker</a>
+        <img src="../public/airport.png" alt="Chunker Page">
+    </button>
+</nav>
+
+<div class="main-container">
+    <h1>Make your files compatible with your company transfer protocols</h1>
+
+    <form class="chunk-container" id="encode-form">
+        <span>File to chunks:</span>
+        <input required type="file">
+        <label>
+            <span>Chunk size (mb):</span>
+            <input required type="number" value="30">
+        </label>
+        <label>
+            <span>Chunk format:</span>
+            <select required>
+                <option value="xlsx">XLSX</option>
+                <option value="json">JSON</option>
+            </select>
+        </label>
+        <button id="download-chunks" class="send-btn">Download Chunks</button>
+    </form>
+
+    <div style="height: 32px"></div>
+
+    <form class="chunk-container" id="decode-form">
+        <span>Chunks to file:</span>
+        <input required type="file" multiple webkitdirectory>
+        <button id="download-merged" class="send-btn">Download Merged File</button>
+    </form>
+</div>
+
+</body>
+
+
+</html>
