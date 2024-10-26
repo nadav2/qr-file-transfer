@@ -30,12 +30,13 @@ button:disabled {
 }
 
 
-.nav-bar > button {
+.nav-bar > a {
     display: flex;
     align-items: center;
     gap: 6px;
     background: none;
     border: 0;
+    text-decoration: none;
 }
 
 
@@ -45,7 +46,7 @@ button:disabled {
 }
 
 
-.nav-bar a {
+.nav-bar span {
     text-decoration: none;
     color: black;
     font-weight: bold;
@@ -54,17 +55,23 @@ button:disabled {
     transition: border-bottom 0.2s ease-in-out;
 }
 
-.nav-bar button:hover a {
+.nav-bar a:hover span {
     border-bottom: 2px solid black;
 }
 
-.nav-bar a.active {
+.nav-bar span.active {
     border-bottom: 2px solid black;
 }
 
+@media (max-width: 500px) {
+    .nav-bar {
+        justify-content: center;
+        gap: 16px;
+    }
+}
 
-@media (max-width: 800px) {
-    .nav-bar a {
+@media (max-width: 400px) {
+    .nav-bar span {
         display: none;
     }
 
