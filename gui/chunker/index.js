@@ -34,6 +34,7 @@ function handleProgressMsg(jsVal, progressBr) {
 async function sendAirportReq(url, formData, disabledComps, progressID) {
     const progress = document.getElementById(progressID);
     const progressBr = progress.querySelector(".progress-br");
+    progressBr.style.width = "15%";
     if (!progressBr.classList.contains("progress-bounce")) {
         progressBr.classList.add("progress-bounce");
     }
