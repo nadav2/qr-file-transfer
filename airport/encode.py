@@ -64,29 +64,32 @@ def stream_chunk_to_excel(json_chunk: dict, path: str):
     df.to_excel(path, index=False)
 
 
-def encode_chunks(input_path: str, out: str, chunk_size: int = 50_000_000, ext: str = "json", chunk_name: str = "chunk"):
+def encode_chunks(input_path: str, out: str, chunk_size: int = 50_000_000, ext: str = "json", chunk_name: str = "chunk", seek_n: int = 0):
     """Create chunks from input file using streaming"""
     n_iter = math.ceil(os.path.getsize(input_path) / chunk_size)
     b64_chunk_name = chunk_name if chunk_name == "chunk" else base64.b64encode(chunk_name.encode()).decode('utf-8')
 
     with open(input_path, 'rb') as f:
+        f.seek(chunk_size * seek_n, os.SEEK_SET)
+
         for idx, b64_chunk in enumerate(tqdm.tqdm(
                 stream_to_base64_chunks(f, chunk_size), desc="Creating chunks", total=n_iter)
         ):
+            idx_n = idx + seek_n
             if type(b64_chunk) == tuple and b64_chunk[0] == "hash":
                 return b64_chunk[1]
 
             json_chunk = distribute_to_letters(b64_chunk)
-            json_chunk['idx'] = idx
+            json_chunk['idx'] = idx_n
 
-            f_name = f"{out}/{b64_chunk_name}_{idx}"
+            f_name = f"{out}/{b64_chunk_name}_{idx_n}"
             if ext == "json":
                 with open(f"{f_name}.json", "w") as chunk_file:
                     chunk_file.write(json.dumps(json_chunk))
             elif ext == "xlsx":
                 stream_chunk_to_excel(json_chunk, f"{f_name}.xlsx")
 
-            yield {"idx": idx + 1, "n": n_iter}
+            yield {"idx": idx_n + 1, "n": n_iter}
 
 
 def encode_chunks_from_io(file_name: str, file_data: bytes, chunk_size: int, ext: str) -> Generator:

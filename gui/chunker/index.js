@@ -14,6 +14,7 @@ function downloadFileFromServer(url) {
 async function sendAirportReq(url, formData, disabledComps, progressID) {
     const progress = document.getElementById(progressID);
     const progressBr = progress.querySelector(".progress-br");
+    progressBr.style.width = "0";
     try {
         for (let id of disabledComps) {
             document.getElementById(id).disabled = true;
