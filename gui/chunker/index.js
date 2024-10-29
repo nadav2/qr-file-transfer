@@ -57,7 +57,7 @@ async function sendAirportReq(url, formData, disabledComps, progressID) {
             const chunk = decoder.decode(value);
             const decChunks = chunk.replaceAll("}{", "}@{").trim().split("@")
             for (let jsTxt of decChunks) {
-                const jsVal = JSON.parse(chunk);
+                const jsVal = JSON.parse(jsTxt);
                 const isDone = handleProgressMsg(jsVal, progressBr);
                 if (isDone) return;
             }
