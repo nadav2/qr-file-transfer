@@ -34,7 +34,7 @@ function handleProgressMsg(jsVal, progressBr) {
 async function sendAirportReq(url, formData, disabledComps, progressID) {
     const progress = document.getElementById(progressID);
     const progressBr = progress.querySelector(".progress-br");
-    progressBr.style.width = "0";
+    progressBr.style.width = "20%";
     try {
         for (let id of disabledComps) {
             document.getElementById(id).disabled = true;
