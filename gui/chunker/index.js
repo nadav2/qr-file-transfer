@@ -11,6 +11,26 @@ function downloadFileFromServer(url) {
     document.body.removeChild(link);
 }
 
+function handleProgressMsg(jsVal, progressBr) {
+    if (jsVal.idx) {
+        progressBr.classList.remove("progress-bounce");
+        progressBr.style.width = `${(jsVal.idx / jsVal.n) * 100}%`;
+        return false
+    }
+    if (jsVal.path) {
+        downloadFileFromServer(jsVal.path)
+        return true
+    }
+    if (jsVal.error) {
+        alert(jsVal.error);
+        return true
+    }
+
+    console.log({jsVal});
+    alert(`Unexpected response: ${jsVal}`);
+    return true
+}
+
 async function sendAirportReq(url, formData, disabledComps, progressID) {
     const progress = document.getElementById(progressID);
     const progressBr = progress.querySelector(".progress-br");
@@ -35,20 +55,11 @@ async function sendAirportReq(url, formData, disabledComps, progressID) {
 
             // Convert the stream chunk to text
             const chunk = decoder.decode(value);
-            const jsVal = JSON.parse(chunk);
-            if (jsVal.idx) {
-                progressBr.classList.remove("progress-bounce");
-                progressBr.style.width = `${(jsVal.idx / jsVal.n) * 100}%`;
-            } else if (jsVal.path) {
-                downloadFileFromServer(jsVal.path)
-                return
-            } else if (jsVal.error) {
-                alert(jsVal.error);
-                return
-            } else {
-                console.log(jsVal);
-                alert(`Unexpected response: ${jsVal}`);
-                return
+            const decChunks = chunk.replaceAll("}{", "}@{").trim().split("@")
+            for (let jsTxt of decChunks) {
+                const jsVal = JSON.parse(chunk);
+                const isDone = handleProgressMsg(jsVal, progressBr);
+                if (isDone) return;
             }
         }
     } catch (error) {
