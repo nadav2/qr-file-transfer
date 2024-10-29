@@ -68,14 +68,15 @@ button:disabled {
 .progress-br {
     border-radius: 30px;
     background: orange;
-    width: 20%;
     height: 100%;
     position: relative;
     left: 0;
+    width: 0;
     transition: width 0.15s linear;
 }
 
 .progress-bounce {
+    width: 15%;
     animation: moveLeftRight 2s linear infinite;
 }
 
