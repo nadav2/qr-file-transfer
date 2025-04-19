@@ -3,17 +3,36 @@ import hashlib
 import json
 import math
 import os
+import shutil
 import string
-import tempfile
+from pathlib import Path
 from typing import BinaryIO, Generator
 from uuid import uuid4
+import zipfile
 
 import tqdm
 import pandas as pd
 
-from airport.utils import zip_directory
-
 EXCEL_CHUNK_SIZE = 20_000
+
+
+def zip_directory(directory_path: str, output_path: str = None):
+    directory = Path(directory_path)
+
+    if output_path is None:
+        output_path = directory.parent / f"{directory.name}.zip"
+
+    with zipfile.ZipFile(output_path, 'w', zipfile.ZIP_DEFLATED) as zipf:
+        for root, dirs, files in os.walk(directory):
+            for file in files:
+                if file.endswith(".txt"):
+                    continue
+
+                file_path = os.path.join(root, file)
+                rel_path = os.path.relpath(file_path, directory)
+                zipf.write(file_path, rel_path)
+
+    return str(output_path)
 
 
 def stream_to_base64_chunks(file_obj: BinaryIO, chunk_size: int) -> Generator[str, None, None]:
@@ -64,7 +83,8 @@ def stream_chunk_to_excel(json_chunk: dict, path: str):
     df.to_excel(path, index=False)
 
 
-def encode_chunks(input_path: str, out: str, chunk_size: int = 50_000_000, ext: str = "json", chunk_name: str = "chunk", seek_n: int = 0):
+def encode_chunks(input_path: str, out: str, chunk_size: int = 50_000_000, ext: str = "json", chunk_name: str = "chunk",
+                  seek_n: int = 0):
     """Create chunks from input file using streaming"""
     n_iter = math.ceil(os.path.getsize(input_path) / chunk_size)
     b64_chunk_name = chunk_name if chunk_name == "chunk" else base64.b64encode(chunk_name.encode()).decode('utf-8')
@@ -92,17 +112,17 @@ def encode_chunks(input_path: str, out: str, chunk_size: int = 50_000_000, ext: 
             yield {"idx": idx_n + 1, "n": n_iter}
 
 
-def encode_chunks_from_io(file_name: str, file_data: bytes, chunk_size: int, ext: str) -> Generator:
-    temp_dir = tempfile.TemporaryDirectory()
-    temp_file = temp_dir.name + "/temp_file.txt"
-    with open(temp_file, "wb") as f:
-        f.write(file_data)
-        f.seek(0)
+def encode_chunks_from_io(file_name: str, chunk_size_mb: int, ext: str) -> Generator:
+    output_dir = "/output_chunks"
+    output_zips = "/output_zips"
+    os.makedirs(output_dir, exist_ok=True)
+    os.makedirs(output_zips, exist_ok=True)
+    chunk_size = int(float(chunk_size_mb) * 1_000_000)
 
-    for val in encode_chunks(input_path=temp_file, out=temp_dir.name, ext=ext, chunk_name=file_name, chunk_size=chunk_size):
-        yield json.dumps(val)
+    for val in encode_chunks(input_path=file_name, out=output_dir, ext=ext, chunk_name=file_name,
+                             chunk_size=chunk_size):
+        yield val
 
-    zip_file = zip_directory(temp_dir.name, f"output/{uuid4().hex}.zip")
-    temp_dir.cleanup()
-
-    yield json.dumps({"path": zip_file})
+    zip_file = zip_directory(output_dir, os.path.join(output_zips, f"{uuid4().hex}.zip"))
+    shutil.rmtree(output_dir)
+    yield {"path": zip_file}

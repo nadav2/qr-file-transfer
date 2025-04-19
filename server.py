@@ -1,19 +1,15 @@
 import base64
 import math
 import os
-import tempfile
-from typing import List
 
 import lt
-from fastapi import FastAPI, WebSocket, File, Form, UploadFile
 import uvicorn
+from fastapi import FastAPI, WebSocket
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import RedirectResponse, StreamingResponse
+from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
-import airport.decode as decoder
-import airport.encode as encoder
 from qr_file_sender import read_blocks
 
 app = FastAPI()
@@ -86,59 +82,9 @@ async def websocket_endpoint(websocket: WebSocket):
             await websocket.send_bytes(file_data_bytes)
 
 
-@app.post("/encode_chunks")
-def encode_chunks_action(file: UploadFile = File(...), chunk_size_mb: str = Form(...), ext: str = Form(...)):
-    print(f"Encoding chunks with size: {file.size} bytes")
-    if file.size > 1_000_000_000:
-        return {
-            "error" "File size too large"
-        }
-
-    chunk_size_bytes = int(float(chunk_size_mb) * 1_000_000)
-    file_bytes = file.file.read()
-    file_name = file.filename.replace("\\", "/").split("/")[-1]
-
-    return StreamingResponse(
-        encoder.encode_chunks_from_io(file_name, file_bytes, chunk_size_bytes, ext),
-        media_type="text/plain"
-    )
-
-
-@app.post("/decode_chunks")
-def decode_chunks_action(files: List[UploadFile] = File(...), ext: str = Form(...)):
-    print(f"Decoding chunks with extension: {ext} ({len(files)} files)")
-    temp_dir = tempfile.TemporaryDirectory()
-    file_names = []
-    for file in files:
-        if not file.filename.endswith(f".{ext}"):
-            continue
-        file_name = file.filename.replace("\\", "/").split("/")[-1]
-        file_names.append([file.file, file_name])
-
-    if len(file_names) == 0:
-        return {
-            "error": "No valid files"
-        }
-
-    if not decoder.validate_file_names([x[1] for x in file_names], ext=ext):
-        return {
-            "error": "Invalid file names"
-        }
-
-    for file, file_name in file_names:
-        temp_file = temp_dir.name + f"/{file_name}"
-        with open(temp_file, "wb") as f:
-            f.write(file.read())
-            f.seek(0)
-
-    return StreamingResponse(
-        decoder.decode_chunks_from_io(temp_dir=temp_dir, ext=ext, output_path=None),
-        media_type="text/plain"
-    )
-
 @app.get("/")
 async def root():
-    return RedirectResponse(url="/sender")
+    return RedirectResponse(url="/chunker")
 
 
 os.makedirs("output", exist_ok=True)
