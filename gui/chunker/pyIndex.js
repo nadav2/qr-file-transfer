@@ -69,6 +69,24 @@ function getFName(path) {
     return path.replaceAll("\\", "/").split("/").at(-1)
 }
 
+function stopEncode() {
+    for (let id of DisableCompsEncode) {
+        document.getElementById(id).disabled = false;
+    }
+
+    const progress = document.getElementById(EncodeProgressID);
+    progress.style.display = "none";
+}
+
+function stopDecode() {
+    for (let id of DisableCompsDecode) {
+        document.getElementById(id).disabled = false;
+    }
+
+    const progress = document.getElementById(DecodeProgressID);
+    progress.style.display = "none";
+}
+
 worker.onmessage = async (event) => {
     const dt = event.data
     const {type} = dt;
@@ -88,30 +106,23 @@ worker.onmessage = async (event) => {
     if (type === "result-encode") {
         const fName = getFName(dt.path)
         downloadFile(dt.buffer, fName)
-
-        for (let id of DisableCompsEncode) {
-            document.getElementById(id).disabled = false;
-        }
-
-        const progress = document.getElementById(EncodeProgressID);
-        progress.style.display = "none";
+        stopEncode()
         return
     }
 
     if (type === "result-decode") {
         const fName = getFName(dt.path)
         downloadFile(dt.buffer, fName)
-
-        for (let id of DisableCompsDecode) {
-            document.getElementById(id).disabled = false;
-        }
-
-        const progress = document.getElementById(DecodeProgressID);
-        progress.style.display = "none";
+        stopDecode()
         return
     }
 
     if (type === "error") {
+        if (dt.from?.includes("decode")) {
+            stopDecode()
+        } else if (dt.from?.includes("encode")) {
+            stopEncode()
+        }
         alert(dt.message)
     }
 }
@@ -180,8 +191,6 @@ function validateFileNames(fileNames, ext) {
 decodeForm.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    startAirportAction(DisableCompsDecode, DecodeProgressID)
-
     const form = e.target;
     const ext = form.chunk_format.value;
 
@@ -193,6 +202,7 @@ decodeForm.addEventListener('submit', async (e) => {
         return;
     }
 
+    startAirportAction(DisableCompsDecode, DecodeProgressID)
     const fileBuffers = [];
     for (let file of form.files.files) {
         fileBuffers.push(await file.arrayBuffer());

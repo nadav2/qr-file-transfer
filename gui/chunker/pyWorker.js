@@ -120,7 +120,7 @@ self.onmessage = async (event) => {
         await onWorkerMessage(event)
     } catch (error) {
         console.error(error)
-        self.postMessage({type: "error", message: error?.message});
+        self.postMessage({type: "error", message: error?.message, from: event.data.type});
     }
 };
 
