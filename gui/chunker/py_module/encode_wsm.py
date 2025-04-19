@@ -115,6 +115,13 @@ def encode_chunks(input_path: str, out: str, chunk_size: int = 50_000_000, ext: 
 def encode_chunks_from_io(file_name: str, chunk_size_mb: int, ext: str) -> Generator:
     output_dir = "/output_chunks"
     output_zips = "/output_zips"
+
+    if os.path.exists(output_dir):
+        shutil.rmtree(output_dir)
+
+    if os.path.exists(output_zips):
+        shutil.rmtree(output_zips)
+
     os.makedirs(output_dir, exist_ok=True)
     os.makedirs(output_zips, exist_ok=True)
     chunk_size = int(float(chunk_size_mb) * 1_000_000)
